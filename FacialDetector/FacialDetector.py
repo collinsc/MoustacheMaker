@@ -17,6 +17,8 @@ class Settings:
     DrawMoustacheDiagnostics    = False
     DrawMoustache               = True
     AnimationPerUpdate          = 3
+    ImageScale                  = 1.0
+
 
 
 class FaceIndexes:
@@ -327,16 +329,24 @@ class FaceDetector():
 	    	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
 def process_keys():
-    keys = cv2.waitKey(1) & 0xFF
-    if keys == ord('q'):
+    keys = cv2.waitKeyEx(1)
+    chars = keys  & 0xFF
+
+    if chars == ord('q'):
         return True
-    if keys == ord('d'):
+    if chars == ord('d'):
         #turn on diagnostics
         Settings.DrawFrame                  = not Settings.DrawFrame
         Settings.DrawMask                   = not Settings.DrawMask
         Settings.DrawMoustacheDiagnostics   = not Settings.DrawMoustacheDiagnostics
-    if keys == ord('m'):
+    if chars == ord('m'):
         Settings.DrawMoustache              = not Settings.DrawMoustache
+    if keys == 2621440:
+        Settings.ImageScale = Settings.ImageScale + 0.1
+    if keys == 2490368:
+        Settings.ImageScale = max(Settings.ImageScale - 0.1, 0.1)
+    print(keys, chars)
+
     return False
 
 def main():
@@ -345,6 +355,7 @@ def main():
     moustaches = Moustaches(missing_cycles = 2)
     p_count = 0
     cycle = 0
+    cv2.namedWindow('frame',cv2.WINDOW_AUTOSIZE)
     while(True):
         # Capture frame-by-frame
         if Settings.PicturePath is not None:
@@ -392,9 +403,11 @@ def main():
         cycle += 1
         if cycle > Settings.AnimationPerUpdate:
             cycle = 0
-        cv2.imshow('frame',frame)
         if process_keys():
             break
+        frame =  cv2.resize(frame, None, fx= Settings.ImageScale, fy=Settings.ImageScale )
+        cv2.imshow('frame',frame)
+
 
    
     
