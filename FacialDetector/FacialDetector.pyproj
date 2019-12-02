@@ -42,8 +42,7 @@
   <ItemGroup>
     <Content Include="data\facial_landmarks_68markup.jpg" />
     <Content Include="moustaches\moustache1.png" />
-    <Content Include="shape_predictor_68_face_landmarks.dat.bz2" />
-    <Content Include="unzipped.dat" />
+    <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
