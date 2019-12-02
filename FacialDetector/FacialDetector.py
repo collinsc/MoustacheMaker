@@ -341,11 +341,11 @@ def process_keys():
         Settings.DrawMoustacheDiagnostics   = not Settings.DrawMoustacheDiagnostics
     if chars == ord('m'):
         Settings.DrawMoustache              = not Settings.DrawMoustache
-    if keys == 2621440:
-        Settings.ImageScale = Settings.ImageScale + 0.1
     if keys == 2490368:
+        Settings.ImageScale = Settings.ImageScale + 0.1
+    if keys == 2621440:
         Settings.ImageScale = max(Settings.ImageScale - 0.1, 0.1)
-    print(keys, chars)
+
 
     return False
 
