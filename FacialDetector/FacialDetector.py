@@ -28,8 +28,8 @@ class FaceIndexes:
 class MoustachePicture1():
     path = "moustaches\\moustache1.png"
     picture = cv2.imread(path,-1)
-    offset = (0,10)
-    scale_fudge=4
+    offset = (1.0,1.05)
+    scale_fudge=4.5
 
 
 class Moustaches():
@@ -175,8 +175,8 @@ class Moustache():
         height_ratio = height/picture.shape[1] * self.picture.scale_fudge
         scaled = cv2.resize(picture, None, fx=height_ratio, fy=height_ratio)
         center = self.get_center()
-        x1 = center[0]-scaled.shape[1]//2 + self.picture.offset[0]
-        y1 = center[1]-scaled.shape[0]//2 + self.picture.offset[1]
+        x1 = int(round((center[0]-scaled.shape[1]//2) * self.picture.offset[0]))
+        y1 = int(round((center[1]-scaled.shape[0]//2) * self.picture.offset[1]))
         x2 = x1 + scaled.shape[1]
         y2 = y1 + scaled.shape[0]
         alpha_s = scaled[:, :, 3] / 255.0
