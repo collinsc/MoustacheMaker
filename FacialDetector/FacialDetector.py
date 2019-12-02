@@ -56,7 +56,7 @@ class Moustaches():
         min_dist = 1000000000
         out_moustache = None
         for moustache in self.moustaches:
-            distance = abs(self.calculate_distance(center, moustache.get_center()))
+            distance = abs(self.calculate_distance(center, moustache.center))
             if distance < min_dist and distance < tolerance:
                 out_moustache = moustache
                 self.matched[moustache] = True
@@ -91,31 +91,13 @@ class Moustaches():
 
 class Moustache():
     """Smoothed moustache using a kalman filter"""
-    def __init__(self, size =5, name="", picture = MoustachePicture1()):
-        self.centers = []
-        self.heights = []
-        self.masks = []
-        self.size = size
+    def __init__(self, name="", picture = MoustachePicture1()):
+        self.center = None
+        self.height = None
+        self.mask = None
         self.name = name
-        self.covariance = 1e-2
         self.picture = picture
 
-
-
-    def _calculate_kalman(self, arr):
-        if len(arr) < 3:
-            return arr[-1]
-        try:
-            dim = len(arr[0])
-        except:
-            dim = 1
-        if dim ==1:
-            obs_covariance = self.covariance
-        if dim == 2:
-            obs_covariance = [[self.covariance,0],[0,self.covariance]]
-        kf = UnscentedKalmanFilter(initial_state_mean=arr[0], n_dim_state=dim,n_dim_obs=dim, observation_covariance=obs_covariance)
-        means, covariances = kf.smooth(arr)
-        return  [int(round(x)) for x in means[-1]]
     @staticmethod
     def calculate_averaged_center(mask):
         xy = sum([mask[FaceIndexes.NoseTip], mask[FaceIndexes.MouthTopCenter], mask[FaceIndexes.NoseUnder]])/3.0
@@ -126,55 +108,25 @@ class Moustache():
         xy = mask[FaceIndexes.MouthTopCenter] - mask[FaceIndexes.NoseUnder]
         return int(round(xy[1]))
 
-    @staticmethod
-    def _smooth_avg(x, window ):
-        if type(x) is not np.array:
-            x = np.array(x)
-        if x.ndim != 1:
-            raise ValueError("smooth only accepts 1 dimension arrays.")
-    
-        window_len = len(x)
-        if window_len < 3:
-            return x[-1].item()
-        if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-            raise ValueError( "Window is not one of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
-
-        if window == 'flat': #moving average
-            w=np.ones((window_len),'d')
-        else:
-            w=eval(f"np.{window}({window_len})")
-    
-        y=np.convolve(w/w.sum(),x,mode='valid')
-        return int(round(y.item()))
     def __len__(s):
         return len(self.centers)
 
 
     def add_frame(self, mask):
-        self.centers.append( self.calculate_averaged_center(mask))
-        self.heights.append(self.calculate_averaged_height(mask))
+        self.center = self.calculate_averaged_center(mask)
+        self.height = self.calculate_averaged_height(mask)
 
-        if len(self.centers)  > self.size:
-            self.centers = self.centers[1:self.size]
 
-    def get_center(self):
-        return self._calculate_kalman(self.centers)
-
-    def get_height(self):
-        height =  self._calculate_kalman(self.heights)
-        if type(height) != int:
-            height = height[0]
-        return height
 
     def get_name(self):
         return self.name
     
     def draw_moustache(self, out):
         picture = self.picture.picture
-        height = self.get_height()
+        height = self.height
         height_ratio = height/picture.shape[1] * self.picture.scale_fudge
         scaled = cv2.resize(picture, None, fx=height_ratio, fy=height_ratio)
-        center = self.get_center()
+        center = self.center
         x1 = int(round((center[0]-scaled.shape[1]//2) * self.picture.offset[0]))
         y1 = int(round((center[1]-scaled.shape[0]//2) * self.picture.offset[1]))
         x2 = x1 + scaled.shape[1]
@@ -187,13 +139,12 @@ class Moustache():
                               alpha_l * out[y1:y2, x1:x2, c])
 
     def draw_moustache_diagnostics(self, out):
-        height = self.get_height()
-
+        height = self.height
         height = int(round(height/2.0))
         cross_length = int(round(height/4.0))
         cross_thickness = 2
         color = (0, 55, 200)
-        center = self.get_center()
+        center = self.center
         #draw center cross
         cv2.line(
             out, 
@@ -251,7 +202,6 @@ class FaceDetector():
         shape = face_utils.shape_to_np(shape)
         return shape
 
-
     def draw_mask(self, shape, out, important_idx=[]):
         for i, (x, y) in enumerate(shape):
             if i in important_idx:
@@ -259,11 +209,25 @@ class FaceDetector():
             else:
                 color = (0, 0, 255)
             cv2.circle(out, (x, y), 1, color, -1)
+
     def draw_bounding_rect(self, rect, out, name = ""):
         x, y, w, h = face_utils.rect_to_bb(rect)
         cv2.rectangle(out, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv2.putText(out, f"Face {name}", (x - 10, y - 10),
 	    	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+def process_keys():
+    keys = cv2.waitKey(1) & 0xFF
+    if keys == ord('q'):
+        return True
+    if keys == ord('d'):
+        #turn on diagnostics
+        Settings.DrawFrame                  = not Settings.DrawFrame
+        Settings.DrawMask                   = not Settings.DrawMask
+        Settings.DrawMoustacheDiagnostics   = not Settings.DrawMoustacheDiagnostics
+    if keys == ord('m'):
+        Settings.DrawMoustache              = not Settings.DrawMoustache
+    return False
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -300,8 +264,9 @@ def main():
         moustaches.update()
 
         cv2.imshow('frame',frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if process_keys():
             break
+   
     
     # When everything done, release the capture
     cap.release()
