@@ -42,6 +42,13 @@
   <ItemGroup>
     <Content Include="data\facial_landmarks_68markup.jpg" />
     <Content Include="moustaches\moustache1.png" />
+    <Content Include="moustaches\moustache2.png" />
+    <Content Include="moustaches\moustache3.png" />
+    <Content Include="moustaches\moustache4.png" />
+    <Content Include="moustaches\moustache5.png" />
+    <Content Include="moustaches\moustache6.png" />
+    <Content Include="moustaches\moustache7.png" />
+    <Content Include="moustaches\moustache8.png" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
