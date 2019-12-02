@@ -10,9 +10,12 @@ from imutils import face_utils
 
 
 class Settings:
+    PicturePath                 = None
     DrawFrame                   = False
     DrawMask                    = False
     DrawMoustacheDiagnostics    = False
+    DrawMoustache               = True
+
 
 class FaceIndexes:
     NoseTip = 30
@@ -24,7 +27,9 @@ class FaceIndexes:
 
 class MoustachePicture1():
     path = "moustaches\\moustache1.png"
-    offset = (0,0)
+    picture = cv2.imread(path,-1)
+    offset = (0,10)
+    scale_fudge=4
 
 
 class Moustaches():
@@ -34,21 +39,25 @@ class Moustaches():
         self.names = {}
         self.moustache_count = 0
         self.max_count = 5
-        self.tolerance = tolerance
         self.matched = {}
+
+    def items(self):
+        for moustache in self.moustaches:
+            yield moustache
+
 
     @staticmethod
     def calculate_distance(p1,p2):  
         dist = math.sqrt((p2[0] - p1[0])**2 + (p2[0] - p1[0])**2)  
         return dist 
 
-    def get_closest_moustache(self, mask):
+    def get_closest_moustache(self, mask, tolerance):
         center = Moustache.calculate_averaged_center(mask)
         min_dist = 1000000000
         out_moustache = None
         for moustache in self.moustaches:
             distance = abs(self.calculate_distance(center, moustache.get_center()))
-            if distance < min_dist and distance < self.tolerance:
+            if distance < min_dist and distance < tolerance:
                 out_moustache = moustache
                 self.matched[moustache] = True
 
@@ -65,9 +74,6 @@ class Moustaches():
         return moustache
 
 
-    def within_tolerance(self, moustache, mask):
-        dist = calculate_distance(center, self.moustache.get_center())
-        return abs(dist) < self.tolerance
 
     def update(self):
 
@@ -164,13 +170,13 @@ class Moustache():
         return self.name
     
     def draw_moustache(self, out):
-        picture = cv2.imread(self.picture.path,-1)
+        picture = self.picture.picture
         height = self.get_height()
-        height_ratio = height/picture.shape[1]
+        height_ratio = height/picture.shape[1] * self.picture.scale_fudge
         scaled = cv2.resize(picture, None, fx=height_ratio, fy=height_ratio)
         center = self.get_center()
-        x1 = center[0]-scaled.shape[1]//2
-        y1 = center[1]-scaled.shape[0]//2
+        x1 = center[0]-scaled.shape[1]//2 + self.picture.offset[0]
+        y1 = center[1]-scaled.shape[0]//2 + self.picture.offset[1]
         x2 = x1 + scaled.shape[1]
         y2 = y1 + scaled.shape[0]
         alpha_s = scaled[:, :, 3] / 255.0
@@ -266,26 +272,33 @@ def main():
     p_count = 0
     while(True):
         # Capture frame-by-frame
-        ret, frame = cap.read()
+        if Settings.PicturePath is not None:
+            frame = cv2.imread(Settings.PicturePath)
+        else:
+            ret, frame = cap.read()
         # Our operations on the frame come here
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         rects = detector.get_faces(gray)
+
         for rect in rects:
             mask = detector.get_face_dots(gray, rect)
-            moustache = moustaches.get_closest_moustache(mask)
+            hdim = rect.right() - rect.left()
+            vdim = rect.bottom() - rect.top()
+            moustache = moustaches.get_closest_moustache(mask, max([hdim,vdim ]))
             if moustache is None:
                 moustache = moustaches.add_moustache()
             moustache.add_frame(mask)
-            moustache.draw_moustache(frame)
             if Settings.DrawFrame:
                 detector.draw_bounding_rect(rect, frame,moustache.get_name())
             if Settings.DrawMask:
                 detector.draw_mask(mask, frame, Moustache.get_landmark_idx())
+        for moustache in moustaches.items():
+            if Settings.DrawMoustache:
+                moustache.draw_moustache(frame)
             if Settings.DrawMoustacheDiagnostics:
                 moustache.draw_moustache_diagnostics(frame)
         moustaches.update()
 
-        # Display the resulting frame
         cv2.imshow('frame',frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
