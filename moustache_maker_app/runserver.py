@@ -3,7 +3,7 @@ This script runs the MoustacheMakerApplication application using a development s
 """
 
 from os import environ
-from MoustacheMakerApplication import app
+from moustache_maker_app import app
 
 if __name__ == '__main__':
     HOST = environ.get('SERVER_HOST', 'localhost')

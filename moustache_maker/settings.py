@@ -1,0 +1,10 @@
+AltPath                     = None #"data/walkers.mp4" "data/two_people.jpg"
+ForceAlt                    = False
+DrawFrame                   = False
+DrawMask                    = False
+DrawMoustacheDiagnostics    = False
+DrawMoustache               = True
+AnimationPerUpdate          = 2
+MissingCycles               = 3
+ImageScale                  = 1.0
+ToleranceScale              = 1.0

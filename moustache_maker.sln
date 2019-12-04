@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MoustacheMaker", "MoustacheMaker\MoustacheMaker.pyproj", "{F5B405F6-676C-494D-ABA5-2D14012903DE}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "moustache_maker", "moustache_maker\moustache_maker.pyproj", "{F5B405F6-676C-494D-ABA5-2D14012903DE}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MoustacheMakerApplication", "MoustacheMakerApplication\MoustacheMakerApplication.pyproj", "{E1DF5AE1-3266-4CBD-BEFE-460C724AC516}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "moustache_maker_app", "moustache_maker_app\moustache_maker_app.pyproj", "{E1DF5AE1-3266-4CBD-BEFE-460C724AC516}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
