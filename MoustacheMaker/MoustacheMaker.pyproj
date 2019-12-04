@@ -5,7 +5,7 @@
     <ProjectGuid>f5b405f6-676c-494d-aba5-2d14012903de</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>moustache_maker.py</StartupFile>
+    <StartupFile>desktop.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -23,6 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="video_stream.py" />
     <Compile Include="face_detector.py">
       <SubType>Code</SubType>
     </Compile>
@@ -35,7 +36,10 @@
     <Compile Include="moustache_pictures.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="moustache_maker.py" />
+    <Compile Include="desktop.py" />
+    <Compile Include="__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="moustaches\" />
