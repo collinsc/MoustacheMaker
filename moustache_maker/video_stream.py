@@ -4,7 +4,8 @@ from threading import Thread
 
 import cv2
 
-import settings
+from . import settings
+
 
 class VideoSource(Enum):
     WEBCAM = 0
@@ -12,10 +13,15 @@ class VideoSource(Enum):
     PICTURE = 2
 
 
-
 class VideoStream(object):
-    """loosely based on https://github.com/log0/video_streaming_with_flask_example"""
-    def __init__(self, force_alt=False, alt_source_path=None, queue_size=128, frame_rate = 25):
+    """loosely based on
+    https://github.com/log0/video_streaming_with_flask_example"""
+
+    def __init__(self,
+                 force_alt=False,
+                 alt_source_path=None,
+                 queue_size=128,
+                 frame_rate=25):
         # Using OpenCV to capture from device 0.  If you have trouble capturing
         # from a webcam, comment the line below out and use a video file
         # instead.
@@ -35,14 +41,13 @@ class VideoStream(object):
         self.q = Queue(queue_size)
         self.stopped = False
 
-
-
     def __enter__(self):
         self.start()
         return self
+
     def __exit__(self, exception_type, exception_value, traceback):
         del(self)
-    
+
     def __del__(self):
         self.video.release()
 
@@ -57,12 +62,11 @@ class VideoStream(object):
             if self.stopped:
                 return
             if not self.q.full():
-            	frame = self.read_image()
-            
-            	# add the frame to the queue
-            	self.q.put(frame)
+                frame = self.read_image()
+                # add the frame to the queue
+                self.q.put(frame)
 
-    def read_image(self): 
+    def read_image(self):
         if self.source == VideoSource.PICTURE:
             image = cv2.imread(settings.PicturePath)
         else:
@@ -72,13 +76,11 @@ class VideoStream(object):
                 if self.video is not None:
                     self.video.set(cv2.CAP_PROP_FPS, self.frame_rate)
                 success, image = self.video.read()
-
         return image
-    
+
     def get_frame(self):
         return self.q.get()
 
-
     def webify_frame(self, frame):
-        ret, jpeg = cv2.imencode('.jpg',frame)
+        ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()

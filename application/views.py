@@ -4,8 +4,9 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, Response
-from moustache_maker_app import app
-from moustache_maker_app.streaming_loop import Streamer
+from application import app
+from application.streaming_loop import Streamer
+
 
 @app.route('/')
 @app.route('/home')
@@ -17,11 +18,13 @@ def home():
         year=datetime.now().year,
     )
 
+
 @app.route('/video_feed')
 def video_feed():
     streamer = Streamer()
     return Response(streamer.loop(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/contact')
 def contact():
@@ -32,6 +35,7 @@ def contact():
         year=datetime.now().year,
         message='Your contact page.'
     )
+
 
 @app.route('/about')
 def about():

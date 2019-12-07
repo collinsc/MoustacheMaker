@@ -1,4 +1,5 @@
 AltPath                     = None #"data/walkers.mp4" "data/two_people.jpg"
+Process                     = True
 ForceAlt                    = False
 DrawFrame                   = False
 DrawMask                    = False
