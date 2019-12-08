@@ -36,7 +36,6 @@ class Moustache():
     @staticmethod
     def calculate_averaged_height(mask):
         xy = mask[FaceIndexes.MouthTopCenter] - mask[FaceIndexes.NoseUnder]
-        print()
         return int(round(math.sqrt(xy[0] * xy[0] + xy[1] * xy[1])))
 
     @staticmethod

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b047ae86ebe85961f7c859138a3359f9aa3fa8bc88111a2af51d3ccf9ed16690"
+            "sha256": "f1369bd424fda6c2445e9ba83f0d6495f00f93799ab3ce47363521e9003879b0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -51,6 +51,14 @@
             ],
             "index": "pypi",
             "version": "==1.1.1"
+        },
+        "flask-session": {
+            "hashes": [
+                "sha256:a31c27e0c3287f00c825b3d9625aba585f4df4cccedb1e7dd5a69a215881a731",
+                "sha256:b9b32126bfc52c3169089f2ed9a40e34b589527bda48b633428e07d39d9c8792"
+            ],
+            "index": "pypi",
+            "version": "==0.3.1"
         },
         "imageio": {
             "hashes": [

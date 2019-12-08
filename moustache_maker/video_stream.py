@@ -4,8 +4,6 @@ from threading import Thread
 
 import cv2
 
-from . import settings
-
 
 class VideoSource(Enum):
     WEBCAM = 0
@@ -68,7 +66,7 @@ class VideoStream(object):
 
     def read_image(self):
         if self.source == VideoSource.PICTURE:
-            image = cv2.imread(settings.PicturePath)
+            image = cv2.imread(self.alt_source_path)
         else:
             success, image = self.video.read()
             if image is None and not self.source == VideoSource.WEBCAM:

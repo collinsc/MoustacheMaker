@@ -5,13 +5,15 @@ from imutils import face_utils
 from .face_detector import FaceDetector
 from .moustaches import Moustaches
 from .moustache import Moustache
-from . import settings
+from .settings import Settings
 
 
-class Application(object):
+class StreamingSession(object):
     def __init__(self):
+        self.settings = Settings()
         self.face_detector = FaceDetector()
-        self.moustaches = Moustaches(missing_cycles=settings.MissingCycles)
+        self.moustaches = Moustaches(
+            missing_cycles=self.settings.MissingCycles)
 
     def update_model(self, frame):
         # Our operations on the frame come here
@@ -19,7 +21,7 @@ class Application(object):
         for face in self.faces:
             hdim = face.rect.right() - face.rect.left()
             vdim = face.rect.bottom() - face.rect.top()
-            margin = max([hdim, vdim]) * settings.ToleranceScale
+            margin = max([hdim, vdim]) * self.settings.ToleranceScale
             moustache = self.moustaches.get_closest_moustache(
                 face.mask, margin)
 
@@ -27,18 +29,18 @@ class Application(object):
                 moustache = self.moustaches.add_moustache(face.mask)
             face.moustache = moustache
             moustache.add_frame(face.mask)
-            moustache.set_goal(settings.AnimationPerUpdate)
+            moustache.set_goal(self.settings.AnimationPerUpdate)
         self.moustaches.update()
 
     def draw(self, frame, idx):
         for face in self.faces:
-            if settings.DrawFrame:
+            if self.settings.DrawFrame:
                 self.draw_bounding_rect(face.rect, frame, face.moustache.name)
-            if settings.DrawMask:
+            if self.settings.DrawMask:
                 self.draw_mask(face.mask, frame, Moustache.get_landmark_idx())
-            if settings.DrawMoustache:
+            if self.settings.DrawMoustache:
                 face.moustache.draw_moustache(frame, idx)
-            if settings.DrawMoustacheDiagnostics:
+            if self.settings.DrawMoustacheDiagnostics:
                 face.moustache.draw_moustache_diagnostics(frame)
 
     def draw_mask(self, shape, out, important_idx=[]):
