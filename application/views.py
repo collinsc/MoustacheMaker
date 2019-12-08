@@ -14,7 +14,7 @@ def home():
     """Renders the home page."""
     return render_template(
         'index.html',
-        title='Home Page',
+        title='Moustache Maker',
         year=datetime.now().year,
     )
 
@@ -24,25 +24,3 @@ def video_feed():
     streamer = Streamer()
     return Response(streamer.loop(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/contact')
-def contact():
-    """Renders the contact page."""
-    return render_template(
-        'contact.html',
-        title='Contact',
-        year=datetime.now().year,
-        message='Your contact page.'
-    )
-
-
-@app.route('/about')
-def about():
-    """Renders the about page."""
-    return render_template(
-        'about.html',
-        title='About',
-        year=datetime.now().year,
-        message='Your application description page.'
-    )

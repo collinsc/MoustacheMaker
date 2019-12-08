@@ -1,16 +1,36 @@
 {
-  "name": "moustache_maker_app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "moustache_maker_front_end",
+  "version": "0.0.0",
+  "description": "![Alt Text](MoustacheMaker/data/moustache.gif)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Collin Conway",
+  "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.5",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collinsc/MoustacheMaker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/collinsc/MoustacheMaker/issues"
+  },
+  "homepage": "https://github.com/collinsc/MoustacheMaker#readme",
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@material-ui/core": "^4.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }

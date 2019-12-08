@@ -1,0 +1,16 @@
+{
+  "name": "Moustache Maker",
+  "theme_color": "#2196f3",
+  "background_color": "#121212",
+  "display": "browser",
+  "orientation": "portrait-primary",
+  "start_url": ".",
+  "display": "browser",
+  "icons" : [
+    {
+      "src" : "/static/content/moustache.ico",
+      "sizes" : "256x256",
+      "type" : "image/x-icon"
+    }
+  ]
+}
