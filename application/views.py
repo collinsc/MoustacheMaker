@@ -3,9 +3,12 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, Response
-from application import app
-from application.streaming_loop import Streamer
+
+from flask import render_template
+from flask import current_app as app
+from flask_socketio import emit
+
+from application import socketio
 
 
 @app.route('/')
@@ -19,8 +22,18 @@ def home():
     )
 
 
-@app.route('/video_feed')
-def video_feed():
-    streamer = Streamer()
-    return Response(streamer.loop(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+@socketio.on('test', namespace='/video_feed')
+def test_message(message):
+    app.logger.debug(f"test message recieved: {message}")
+    emit('message', {'data': message['data']})
+
+
+@socketio.on('connect', namespace='/video_feed')
+def test_connect():
+    app.logger.debug("client connected")
+    emit('message', {'data': 'Connected'})
+
+
+@socketio.on('disconnect', namespace='/video_feed')
+def test_disconnect():
+    app.logger.debug('Client disconnected')
