@@ -16,7 +16,7 @@ imageio = "==2.6.1"
 Flask = ">1"
 Flask-Session = ">0.3"
 loguru = "==0.4.0"
-eventlet = "==0.25.1"
+eventlet = "==0.31.0"
 Flask-SocketIO = "==4.2.1"
 Flask-SQLAlchemy = "==2.4.1"
 
